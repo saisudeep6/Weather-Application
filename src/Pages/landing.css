@@ -1,3 +1,7 @@
+body {
+  background-color: #090d14;
+}
+
 .MainLogo {
   animation: MainLogoAnimation 10s ease infinite;
 }
@@ -129,7 +133,7 @@
   width: 100%;
   border-radius: 40px;
   background: linear-gradient(45deg, #33383e, #17191d, #33383e, #17191d);
-  /* background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); */
+
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
   display: block;
@@ -460,4 +464,183 @@
   height: 100%;
   object-fit: cover;
   background-blend-mode: overlay;
+}
+
+.leaflet-container {
+  border-radius: 50px;
+}
+.leaflet-bottom.leaflet-right {
+  display: none;
+}
+.leaflet-marker-icon {
+  animation: MarkerAnimation 1s ease infinite;
+}
+
+@keyframes MarkerAnimation {
+  from {
+    margin-top: -40px;
+  }
+  to {
+    margin-top: -45px;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.up {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.down {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.card1 {
+  width: 200px;
+  height: 150px;
+  outline: none;
+  border: none;
+  background: #212429;
+  border-radius: 90px 5px 5px 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  transition: 0.2s ease-in-out;
+}
+
+.instagram {
+  margin-top: 1.5em;
+  margin-left: 1.2em;
+  fill: #cc39a4;
+}
+
+.card2 {
+  width: 200px;
+  height: 150px;
+  outline: none;
+  border: none;
+  background: #212429;
+  border-radius: 5px 90px 5px 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  transition: 0.2s ease-in-out;
+}
+
+.twitter {
+  margin-top: 1.5em;
+  margin-left: -0.9em;
+  fill: #03a9f4;
+}
+
+.card3 {
+  width: 200px;
+  height: 150px;
+  outline: none;
+  border: none;
+  background: #212429;
+  border-radius: 5px 5px 5px 90px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  transition: 0.2s ease-in-out;
+}
+
+.github {
+  margin-top: -0.6em;
+  margin-left: 1.2em;
+}
+
+.card4 {
+  width: 200px;
+  height: 150px;
+  outline: none;
+  border: none;
+  background: #212429;
+  border-radius: 5px 5px 90px 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  transition: 0.2s ease-in-out;
+}
+
+.discord {
+  margin-top: -0.9em;
+  margin-left: -1.2em;
+  fill: #8c9eff;
+}
+
+.card1:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: #cc39a4;
+}
+
+.card1:hover .instagram {
+  fill: white;
+}
+
+.card2:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: #03a9f4;
+}
+
+.card2:hover .twitter {
+  fill: white;
+}
+
+.card3:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: blueviolet;
+}
+
+.card3:hover .github {
+  fill: white;
+}
+
+.loader {
+  margin-left: 40px;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  transform: rotate(45deg);
+}
+
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 0 50%;
+  background: #0000;
+  background-image: radial-gradient(circle 7px at 50% 50%, #0000 90%, #ff4747);
+}
+
+.loader:after {
+  animation: pulse-Location 1s infinite;
+  transform: perspective(336px) translateZ(0px);
+}
+
+@keyframes pulse-Location {
+  to {
+    transform: perspective(336px) translateZ(168px);
+    opacity: 0;
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: black;
+  border-radius: 10px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #7829c570 black;
 }

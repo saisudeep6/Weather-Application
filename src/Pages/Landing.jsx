@@ -6,6 +6,7 @@ import "./landing.css";
 import axios from "axios";
 import song from './music/Blank Space.mp3'
 import Clock from './Clock'; 
+import WeatherMap from './WeatherMap';
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -89,30 +90,67 @@ export default function Example() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [unit, setUnit] = useState("metric"); // or 'imperial' for Fahrenheit
+  const [location, setLocation] = useState(null);
 
   const API_KEY = "5de63f8347f04fbc52201cf335859947"; // Replace with your actual API key
   const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
   const FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast";
+  useEffect(() => {
+    const fetchLocation = () => {
+      if (!navigator.geolocation) {
+        setError('Geolocation is not supported by your browser');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+            );
+            if (!response.ok) {
+              throw new Error('Failed to fetch location');
+            }
+            const data = await response.json();
+            let locality = data.address?.county || data.address?.city || data.address?.state || data.address?.neighbourhood || 'Unknown';
+            locality = locality.replace(/\bmandal\b/gi, '').trim();
+            setLocation(locality);
+            fetchData(locality)
+            setCity(locality)
+          } catch (error) {
+            setError('Failed to fetch location');
+          }
+        },
+        (error) => {
+          setError(error.message);
+        }
+      );
+    };
 
+    fetchLocation();
+  }, []);
+
+
+  
   useEffect(() => {
     if (city.trim() === "") return;
   }, [city]);
 
-  const fetchData = async () => {
+  const fetchData = async (cityValue) => {
     setLoading(true);
     try {
       const currentWeatherResponse = await axios.get(BASE_URL, {
         params: {
-          q: city,
+          q: cityValue,
           appid: API_KEY,
           units: "metric", 
         },
       });
       setWeatherData(currentWeatherResponse.data);
-
+  
       const forecastResponse = await axios.get(FORECAST_URL, {
         params: {
-          q: city,
+          q: cityValue,
           appid: API_KEY,
           units: "metric",
           cnt: 5, 
@@ -125,6 +163,7 @@ export default function Example() {
     }
     setLoading(false);
   };
+  
 
   const parseForecastData = (forecastList) => {
     return forecastList.map((item) => ({
@@ -143,24 +182,37 @@ export default function Example() {
     event.preventDefault();
 
     if (city.trim() === "") return;
-    fetchData();
+    fetchData(city);
     setWeatherData(null); 
     setForecastData([]); 
   };
+
+  
+
   return (
-    <div className="bg-[#090d14] text-white h-[100vh]">
+    <div className="bg-[#090d14] text-white h-[auto]">
+               {error && 
+      <div className="fixed top-0 end-0 z-[60] sm:max-w-xl w-full mx-auto p-6">
+        <div className="p-4  bg-[#353a40] rounded-xl shadow-sm">
+          <div className="grid sm:flex sm:items-center gap-y-3 sm:gap-y-0 sm:gap-x-5">
+              <h2 className="text-gray-500">
+                <span className="font-semibold text-white font-bold"><span className="text-[red] ">Error: </span>{error}</span>
+              </h2>
+          </div>
+        </div>
+      </div>
+      }
       <header className="absolute inset-x-0 top-0 z-50">
         <nav
-          className="flex items-center justify-center p-6 lg:px-8"
+          className="flex justify-center p-6 pb-0 lg:px-8"
           aria-label="Global"
         >
-          <form onSubmit={handleSubmit} className="mb-4">
+          <form onSubmit={handleSubmit} className="">
             <div className="input-wrapper">
               <button
                 className="icon Explore-Button relative z-[999]"
                 type="submit"
                 onClick={handleSubmit}
-                // disabled={loading}
               >
                 <span className="IconContainer">
                   <svg
@@ -190,8 +242,8 @@ export default function Example() {
                         x1="16"
                         id="paint0_linear_131_19"
                       >
-                        <stop stop-color="#6A8EF6"></stop>
-                        <stop stop-color="#BF8AEB" offset="1"></stop>
+                        <stop stopColor="#6A8EF6"></stop>
+                        <stop stopColor="#BF8AEB" offset="1"></stop>
                       </linearGradient>
                       <linearGradient
                         gradientUnits="userSpaceOnUse"
@@ -201,8 +253,8 @@ export default function Example() {
                         x1="52"
                         id="paint1_linear_131_19"
                       >
-                        <stop stop-color="#6A8EF6"></stop>
-                        <stop stop-color="#BF8AEB" offset="1"></stop>
+                        <stop stopColor="#6A8EF6"></stop>
+                        <stop stopColor="#BF8AEB" offset="1"></stop>
                       </linearGradient>
                       <linearGradient
                         gradientUnits="userSpaceOnUse"
@@ -212,8 +264,8 @@ export default function Example() {
                         x1="112.5"
                         id="paint2_linear_131_19"
                       >
-                        <stop stop-color="#6A8EF6"></stop>
-                        <stop stop-color="#BF8AEB" offset="1"></stop>
+                        <stop stopColor="#6A8EF6"></stop>
+                        <stop stopColor="#BF8AEB" offset="1"></stop>
                       </linearGradient>
                     </defs>
                   </svg>
@@ -225,20 +277,20 @@ export default function Example() {
                     className="tripod"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-width="11"
+                      strokeLinecap="round"
+                      strokeWidth="11"
                       stroke="url(#paint0_linear_124_14)"
                       d="M98.4336 63.3406L52 5.99991"
                     ></path>
                     <path
-                      stroke-linecap="round"
-                      stroke-width="11"
+                      strokeLinecap="round"
+                      strokeWidth="11"
                       stroke="url(#paint1_linear_124_14)"
                       d="M52.4336 6L6.00004 63.3407"
                     ></path>
                     <path
-                      stroke-linecap="round"
-                      stroke-width="11"
+                      strokeLinecap="round"
+                      strokeWidth="11"
                       stroke="url(#paint2_linear_124_14)"
                       d="M52 63L52 6"
                     ></path>
@@ -251,8 +303,8 @@ export default function Example() {
                         x1="77.5"
                         id="paint0_linear_124_14"
                       >
-                        <stop stop-color="#8E8DF2"></stop>
-                        <stop stop-color="#BC8BEC" offset="1"></stop>
+                        <stop stopColor="#8E8DF2"></stop>
+                        <stop stopColor="#BC8BEC" offset="1"></stop>
                       </linearGradient>
                       <linearGradient
                         gradientUnits="userSpaceOnUse"
@@ -262,8 +314,8 @@ export default function Example() {
                         x1="26.1302"
                         id="paint1_linear_124_14"
                       >
-                        <stop stop-color="#8E8DF2"></stop>
-                        <stop stop-color="#BC8BEC" offset="1"></stop>
+                        <stop stopColor="#8E8DF2"></stop>
+                        <stop stopColor="#BC8BEC" offset="1"></stop>
                       </linearGradient>
                       <linearGradient
                         gradientUnits="userSpaceOnUse"
@@ -273,8 +325,8 @@ export default function Example() {
                         x1="55.4548"
                         id="paint2_linear_124_14"
                       >
-                        <stop stop-color="#8E8DF2"></stop>
-                        <stop stop-color="#BC8BEC" offset="1"></stop>
+                        <stop stopColor="#8E8DF2"></stop>
+                        <stop stopColor="#BC8BEC" offset="1"></stop>
                       </linearGradient>
                     </defs>
                   </svg>
@@ -291,7 +343,12 @@ export default function Example() {
             </div>
           </form>
         </nav>
-      </header>
+        <marquee 
+         style={{
+          fontFamily: "cursive",
+        }}
+        >Automatic location fetching will occur once the user grants location access..</marquee>
+        </header>
 
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div
@@ -346,51 +403,51 @@ export default function Example() {
                       }}
                     >
                       <li className="cursor-pointer transform transition-transform duration-300 hover:scale-[1.051]">
-                        <div className="flex items-center justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
+                        <div className="flex items-start justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
                           <div>
-                            <h3 className="text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight">
+                          <h3 className="mt-5 pt-5 text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight text-center">
                               CLIMATE
                             </h3>
-                            <p style={{fontFamily:'math', textAlign:'center'}} className="text-[#2ecde5] mt-4 text-[1.7em] text-base font-semibold leading-7 tracking-tight">
+                            <p style={{fontFamily:'math', textAlign:'center', fontSize:'calc(0.7em + 1vw'}} className="text-[#2ecde5] mt-4 font-semibold leading-7 tracking-tight capitalize">
                               {weatherData
                                 ? weatherData.weather[0].description
-                                : " "}
+                                : " ----"}
                             </p>
                           </div>
                         </div>
                       </li>
 
                       <li className="cursor-pointer transform transition-transform duration-300 hover:scale-[1.051]">
-                        <div className="flex items-center justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
+                        <div className="flex items-start justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
                           <div>
-                            <h3 className="text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight">
+                          <h3 className="mt-5 pt-5 text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight text-center">
                               HUMIDITY
                             </h3>
-                            <p style={{fontFamily:'math', textAlign:'center'}} className="text-[blueviolet] mt-4 text-[1.7em] text-base font-semibold leading-7 tracking-tight">
+                            <p style={{fontFamily:'math', textAlign:'center', fontSize:'calc(0.7em + 1vw'}} className="text-[blueviolet] mt-4 font-semibold leading-7 tracking-tight">
                               {weatherData ? weatherData.main.humidity : "0"}%
                             </p>
                           </div>
                         </div>
                       </li>
                       <li className="cursor-pointer transform transition-transform duration-300 hover:scale-[1.051]">
-                        <div className="flex items-center justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
+                        <div className="flex items-start justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
                           <div>
-                            <h3 className="text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight">
+                          <h3 className="mt-5 pt-5 text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight text-center">
                               WIND SPEED
                             </h3>
-                            <p style={{fontFamily:'math', textAlign:'center'}} className="text-[chartreuse] mt-4 text-[1.7em] text-base font-semibold leading-7 tracking-tight">
+                            <p style={{fontFamily:'math', textAlign:'center', fontSize:'calc(0.7em + 1vw'}} className="text-[chartreuse] mt-4 font-semibold leading-7 tracking-tight">
                               {weatherData ? weatherData.wind.speed : "0"} m/s
                             </p>
                           </div>
                         </div>
                       </li>
                       <li className="cursor-pointer transform transition-transform duration-300 hover:scale-[1.051]">
-                        <div className="flex items-center justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
+                        <div className="flex items-start justify-center gap-x-6 bg-[#1f2226a6] rounded-lg h-[19.15vh] custom-white-shadow transition-shadow duration-300">
                           <div>
-                          <h3 className="text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight text-center">
+                          <h3 className="mt-5 pt-5 text-[darkgrey] text-base text-[1em] font-semibold leading-7 tracking-tight text-center">
                           VISIBILITY
                             </h3>
-                            <p style={{fontFamily:'math', textAlign:'center'}} className="text-[floralwhite] mt-4 text-[1.7em] text-base font-semibold leading-7 tracking-tight">
+                            <p style={{fontFamily:'math', textAlign:'center', fontSize:'calc(0.7em + 1vw'}} className="text-[floralwhite] mt-4 font-semibold leading-7 tracking-tight">
                               {weatherData ? weatherData.visibility : "0"}{" "}
                               m
                             </p>
@@ -416,7 +473,7 @@ export default function Example() {
                       role="list"
                       className="grid gap-x-8 gap-y-12 sm:grid-cols-1 sm:gap-y-16 xl:col-span-1 cursor-pointer transform transition-transform duration-300 hover:scale-[1.051]"
                     >
-                      <li className="bg-[#fdc1ffbd] text-black rounded-lg custom-white-shadow transition-shadow duration-300 p-2">
+                      <li className="bg-[#7829c5] text-black rounded-lg custom-white-shadow transition-shadow duration-300 p-2">
                         <h3 className="text-base font-semibold leading-7 tracking-tight p-3">
                           Weather
                         </h3>
@@ -426,6 +483,8 @@ export default function Example() {
                               className="flex items-center"
                               style={{
                                 fontFamily: "cursive",
+                                justifyContent: "space-between",
+                                width: "-webkit-fill-available"
                               }}
                             >
                               <img
@@ -433,9 +492,14 @@ export default function Example() {
                                 src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`}
                                 alt={weatherData.weather[0].description}
                               />
-                              <p className="text-[3.4em] font-bold">
-                                {weatherData.main.temp}°C
-                              </p>
+                           <p style={{
+                              fontSize: 'calc(1.5em + 1vw)',
+                              color: 'powderblue'
+                            }}>
+                              {weatherData.main.temp}°C
+                            </p>
+
+
                             </div>
                           ) : (
                             <svg
@@ -457,12 +521,12 @@ export default function Example() {
               </div>
 
               <div className="text-white rounded-lg bg-[#3027271f] mt-5">
-                <div className="relative isolate">
+                <div className="relative isolate h-[32vh]">
                   <div className="max-w-full lg:max-w-full">
                     <img
                       src={images[currentImageIndex]}
                       alt="Animated Background"
-                      className="w-full h-64 object-cover rounded-lg shadow-md"
+                      className="w-full h-[32vh] object-cover rounded-lg shadow-md"
                     />
                   </div>
                   <div className="flex justify-center w-full -mt-20 overflow-hidden bg-white rounded-lg shadow-lg ">
@@ -473,18 +537,18 @@ export default function Example() {
                 </div>
               </div>
 
-              <div className="w-full max-w-full overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 mt-[53px]">
+              <div className="w-full max-w-full overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 mt-5">
                 <div className="flex">
                   <div className="overflow-hidden">
                     <img
-                      className="w-full bg-cover object-cover object-center h-[300px] transition-transform duration-1000 hover:scale-[1.051]"
+                      className="w-full bg-cover object-cover object-center h-[100%] transition-transform duration-1000 hover:scale-[1.051]"
                       src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2382afd6-d76a-4993-8149-e1c13695b545/dfs8rkd-7d9b6479-dcc8-498a-834d-df892df48fd4.png/v1/fill/w_894,h_894,q_70,strp/lovely_anime_sunrise_scenery_by_ddyykk_dfs8rkd-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAyNCIsInBhdGgiOiJcL2ZcLzIzODJhZmQ2LWQ3NmEtNDk5My04MTQ5LWUxYzEzNjk1YjU0NVwvZGZzOHJrZC03ZDliNjQ3OS1kY2M4LTQ5OGEtODM0ZC1kZjg5MmRmNDhmZDQucG5nIiwid2lkdGgiOiI8PTEwMjQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.gqaYEEBlguI5vpqTuRr9iDzzR-elO6iX5yTh-naXSbM"
                       alt="avatar"
                     />
                   </div>
                   <div className="overflow-hidden">
                     <img
-                      className="w-full bg-cover object-cover object-center h-[300px] transition-transform duration-1000 hover:scale-[1.051]"
+                      className="w-full bg-cover object-cover object-center h-[100%] transition-transform duration-1000 hover:scale-[1.051]"
                       src="https://pics.craiyon.com/2023-11-10/tBITRBI1SqOylA1WMYX9kQ.webp"
                       alt="avatar"
                     />
@@ -681,21 +745,65 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
 
             
             <div className="group relative bg-[#3027271f] rounded-lg h-[85vh]">
-        <div className="mt-4 flex justify-between">
-        <div className="max-w-full lg:max-w-full">
-        <div className="background-blend rounded-lg">
-        {/* <img
-          src='https://i.pinimg.com/originals/f3/21/97/f32197f072587bc2bb08a879839fabec.gif'
-          alt="Animated Background"
-          className="background-image"
-        /> */}
-                <img
-          src='https://hackernoon.com/images/0*zzg_YoHtb5wXe98Z.gif'
-          alt="Animated Background"
-          className="background-image"
-        />
+            <div className="main">
+                    <div className="up">
+                      <button className="card1 text-[darkgray]">
+                      Pressure    
+   <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.pressure : 0 } hPa</p>
+   </button>
+                      <button className="card2 text-[darkgray]">
+                      Sea Level Pressure    
+    <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.sea_level : 0 } hPa</p>
+    </button>
+                    </div>
+                    <div className="down">
+                      <button className="card3 text-[darkgray]">
+                      Gorund Level Pressure 
+    <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.grnd_level : 0 } hPa</p>
+    </button>
+                      <button className="card4 overflow-hidden">
+                  <img src="https://d33wubrfki0l68.cloudfront.net/b68b4d504a8d63f8f3dd398a26b09fc43f90e67a/2190a/uploads/dribbble-loader-green.gif"/> 
+                     </button>
+                    </div>
+          </div>
+        <div className="flex justify-between">
+        <div className="max-w-full w-full">
+<div className="mt-5">
+<div className="grid grid-cols-1 gap-4 text-center">
+  <div className="bg-[#171b2059] mt-3 py-8 rounded-lg flex justify-between px-5"
+  style={{
+    boxShadow: 'rgba(225, 225, 225, 0.2) 0px 1px 4px',
+  }}>
+            <span>Rain Volume (last 1h)</span>
+            <span>{ weatherData ? (weatherData.rain ? weatherData.rain['1h'] : '0') : 0 } mm</span>
+  </div>
+  <div className="bg-[#171b2059] mt-3 py-8 rounded-lg flex justify-between px-5"
+  style={{
+    boxShadow: 'rgba(225, 225, 225, 0.2) 0px 1px 4px',
+  }}>
+            <span>Cloudiness</span>
+            <span>{ weatherData ? weatherData.clouds.all: 0 } %</span>
+  </div>
+</div>
+</div>
+
+<div className="mt-5">
+{weatherData ?
+(
+  <div>
+ <WeatherMap lat={weatherData.coord.lat} lon={weatherData.coord.lon}  />
+ {/* Uncomment and try other styles as needed */}
+ {/* <WeatherMap lat={weatherData.coord.lat} lon={weatherData.coord.lon} mapStyle="light_all" /> */}
+ {/* <WeatherMap lat={weatherData.coord.lat} lon={weatherData.coord.lon} mapStyle="voyager" /> */}
+</div>
+) : (
+<WeatherMap lat={17.3753} lon={78.4744} mapStyle="dark_all" />
+)
+}
+</div>
+
+
       </div>
-                  </div>
         </div>
       </div> 
 
@@ -717,3 +825,52 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
     </div>
   );
 }
+
+
+
+ {/* <img
+          src='https://i.pinimg.com/originals/f3/21/97/f32197f072587bc2bb08a879839fabec.gif'
+          alt="Animated Background"
+          className="background-image"
+        /> */}
+                {/* <img
+          src='https://hackernoon.com/images/0*zzg_YoHtb5wXe98Z.gif'
+          alt="Animated Background"
+          className="background-image"
+        /> */}
+
+{/* {error && <p className="text-red-500">{error}</p>}
+
+{weatherData && (
+<div className="p-4 bg-white text-black shadow-md rounded-md">
+<h2 className="text-xl font-bold">{weatherData.name}, {weatherData.sys.country}</h2>
+<div className="flex items-center">
+  <img
+      className="w-12 h-12 mr-2"
+      src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`}
+      alt={weatherData.weather[0].description}
+  />
+  <p className="text-lg">{weatherData.main.temp}°C</p>
+</div>
+<p className="text-gray-600">{weatherData.weather[0].description}</p>
+<p>Coordinates: {weatherData.coord.lat}, {weatherData.coord.lon}</p>
+<p>Humidity: {weatherData.main.humidity}%</p>
+<p>Wind Speed: {weatherData.wind.speed} {unit === 'metric' ? 'm/s' : 'mph'}</p>
+<p>Rain Volume (last 1h): {weatherData.rain ? weatherData.rain['1h'] : '0'} mm</p>
+<p>Sunrise: {new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString()}</p>
+<p>Sunset: {new Date(weatherData.sys.sunset * 1000).toLocaleTimeString()}</p>
+<p>Feels Like: {weatherData.main.feels_like}°{unit === 'metric' ? 'C' : 'F'}</p>
+<p>Visibility: {weatherData.visibility} {unit === 'metric' ? 'meters' : 'miles'}</p>
+<p>Pressure: {weatherData.main.pressure} hPa</p>
+<p>Sea Level Pressure: {weatherData.main.sea_level} hPa</p>
+<p>Ground Level Pressure: {weatherData.main.grnd_level} hPa</p>
+<p>Cloudiness: {weatherData.clouds.all}%</p>
+<div>
+  <h3>Additional Conditions:</h3>
+  {weatherData.weather.slice(1).map((condition, index) => (
+      <p key={index}>{condition.description}</p>
+  ))}
+</div>
+
+</div>
+)} */}
