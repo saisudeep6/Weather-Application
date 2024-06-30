@@ -89,10 +89,10 @@ export default function Example() {
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [unit, setUnit] = useState("metric"); // or 'imperial' for Fahrenheit
+  const [unit, setUnit] = useState("metric"); 
   const [location, setLocation] = useState(null);
 
-  const API_KEY = "5de63f8347f04fbc52201cf335859947"; // Replace with your actual API key
+  const API_KEY = "5de63f8347f04fbc52201cf335859947";
   const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
   const FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast";
   useEffect(() => {

@@ -5,7 +5,6 @@ const LocationInfo = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Function to fetch current location using Geolocation API
     const fetchLocation = () => {
       if (!navigator.geolocation) {
         setError('Geolocation is not supported by your browser');
@@ -17,7 +16,6 @@ const LocationInfo = () => {
           const { latitude, longitude } = position.coords;
 
           try {
-            // Using OpenStreetMap Nominatim API for reverse geocoding
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
             );
@@ -25,12 +23,8 @@ const LocationInfo = () => {
               throw new Error('Failed to fetch location');
             }
             const data = await response.json();
-            // Extracting only the locality name
             let locality = data.address?.county || data.address?.city || data.address?.state || data.address?.neighbourhood || 'Unknown';
-            
-            // Remove the word "mandal" if it exists
             locality = locality.replace(/\bmandal\b/gi, '').trim();
-            
             setLocation(locality);
           } catch (error) {
             setError('Failed to fetch location');
