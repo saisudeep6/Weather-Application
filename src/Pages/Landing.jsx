@@ -749,17 +749,17 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
                     <div className="up">
                       <button className="card1 text-[darkgray]">
                       Pressure    
-   <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.pressure : 0 } hPa</p>
+   <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.pressure : 0 }hPa</p>
    </button>
                       <button className="card2 text-[darkgray]">
                       Sea Level Pressure    
-    <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.sea_level : 0 } hPa</p>
+    <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.sea_level : 0 }hPa</p>
     </button>
                     </div>
                     <div className="down">
                       <button className="card3 text-[darkgray]">
                       Gorund Level Pressure 
-    <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.grnd_level : 0 } hPa</p>
+    <p className="text-[1.5em] text-[floralwhite]">{ weatherData ? weatherData.main.grnd_level : 0 }hPa</p>
     </button>
                       <button className="card4 overflow-hidden">
                   <img src="https://d33wubrfki0l68.cloudfront.net/b68b4d504a8d63f8f3dd398a26b09fc43f90e67a/2190a/uploads/dribbble-loader-green.gif"/> 
@@ -769,20 +769,20 @@ PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8v
         <div className="flex justify-between">
         <div className="max-w-full w-full">
 <div className="mt-5">
-<div className="grid grid-cols-1 gap-4 text-center">
+<div className="grid grid-cols-1 gap-2 text-center">
   <div className="bg-[#171b2059] mt-3 py-8 rounded-lg flex justify-between px-5"
   style={{
     boxShadow: 'rgba(225, 225, 225, 0.2) 0px 1px 4px',
   }}>
             <span>Rain Volume (last 1h)</span>
-            <span>{ weatherData ? (weatherData.rain ? weatherData.rain['1h'] : '0') : 0 } mm</span>
+            <span className="text-[1.1em] text-[floralwhite]">{ weatherData ? (weatherData.rain ? weatherData.rain['1h'] : '0') : 0 }mm</span>
   </div>
   <div className="bg-[#171b2059] mt-3 py-8 rounded-lg flex justify-between px-5"
   style={{
     boxShadow: 'rgba(225, 225, 225, 0.2) 0px 1px 4px',
   }}>
             <span>Cloudiness</span>
-            <span>{ weatherData ? weatherData.clouds.all: 0 } %</span>
+            <span className="text-[1.1em] text-[floralwhite]" >{ weatherData ? weatherData.clouds.all: 0 }%</span>
   </div>
 </div>
 </div>
