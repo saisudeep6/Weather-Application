@@ -1,12 +1,9 @@
 import React, { useState, useEffect,useRef } from "react";
-import { Dialog, DialogPanel } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import logo from "./logo.png";
-import "./landing.css";
+import "../assets/styles/landing.css";
 import axios from "axios";
-import song from './music/Blank Space.mp3'
-import Clock from './Clock'; 
-import WeatherMap from './WeatherMap';
+import song from '../assets/songs/Blank Space.mp3'
+import Clock from '../components/Clock/Clock'; 
+import WeatherMap from '../components/Weather/WeatherMap';
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -207,6 +204,8 @@ export default function Example() {
           className="flex justify-center p-6 pb-0 lg:px-8"
           aria-label="Global"
         >
+
+
           <form onSubmit={handleSubmit} className="">
             <div className="input-wrapper">
               <button
@@ -474,7 +473,7 @@ export default function Example() {
                       className="grid gap-x-8 gap-y-12 sm:grid-cols-1 sm:gap-y-16 xl:col-span-1 cursor-pointer transform transition-transform duration-300 hover:scale-[1.051]"
                     >
                       <li className="bg-[#7829c5] text-black rounded-lg custom-white-shadow transition-shadow duration-300 p-2">
-                        <h3 className="text-base font-semibold leading-7 tracking-tight p-3">
+                        <h3 className="text-[1.5em] font-semibold leading-7 tracking-tight p-3 text-[floralwhite]">
                           Weather
                         </h3>
                         <div className="flex justify-start item-center gap-x-6 h-[8vh] my-3 px-5">

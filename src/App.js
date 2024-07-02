@@ -1,10 +1,10 @@
 import React from 'react';
-import Landing from './Pages/Landing';
+import Landing from './pages/Landing';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      <Landing/>
+      <Landing />
     </div>
   );
 }

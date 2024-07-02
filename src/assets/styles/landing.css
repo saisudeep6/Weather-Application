@@ -605,36 +605,6 @@ body {
   fill: white;
 }
 
-.loader {
-  margin-left: 40px;
-  width: 30px;
-  height: 30px;
-  position: relative;
-  transform: rotate(45deg);
-}
-
-.loader:before,
-.loader:after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50% 50% 0 50%;
-  background: #0000;
-  background-image: radial-gradient(circle 7px at 50% 50%, #0000 90%, #ff4747);
-}
-
-.loader:after {
-  animation: pulse-Location 1s infinite;
-  transform: perspective(336px) translateZ(0px);
-}
-
-@keyframes pulse-Location {
-  to {
-    transform: perspective(336px) translateZ(168px);
-    opacity: 0;
-  }
-}
-
 ::-webkit-scrollbar-track {
   background: black;
   border-radius: 10px;
